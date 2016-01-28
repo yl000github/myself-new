@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dao.AffairMapper" >
+  <resultMap id="BaseResultMap" type="domain.Affair" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="what" property="what" jdbcType="VARCHAR" />
+    <result column="why" property="why" jdbcType="VARCHAR" />
+    <result column="how" property="how" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="done_time" property="doneTime" jdbcType="TIMESTAMP" />
+    <result column="duration" property="duration" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, what, why, how, status, type, comment, create_time, start_time, done_time, duration
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from affair
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from affair
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="domain.Affair" >
+    insert into affair (id, what, why, 
+      how, status, type, 
+      comment, create_time, start_time, 
+      done_time, duration)
+    values (#{id,jdbcType=INTEGER}, #{what,jdbcType=VARCHAR}, #{why,jdbcType=VARCHAR}, 
+      #{how,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{comment,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{doneTime,jdbcType=TIMESTAMP}, #{duration,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="domain.Affair" >
+    insert into affair
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="what != null" >
+        what,
+      </if>
+      <if test="why != null" >
+        why,
+      </if>
+      <if test="how != null" >
+        how,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="doneTime != null" >
+        done_time,
+      </if>
+      <if test="duration != null" >
+        duration,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="what != null" >
+        #{what,jdbcType=VARCHAR},
+      </if>
+      <if test="why != null" >
+        #{why,jdbcType=VARCHAR},
+      </if>
+      <if test="how != null" >
+        #{how,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="doneTime != null" >
+        #{doneTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="duration != null" >
+        #{duration,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="domain.Affair" >
+    update affair
+    <set >
+      <if test="what != null" >
+        what = #{what,jdbcType=VARCHAR},
+      </if>
+      <if test="why != null" >
+        why = #{why,jdbcType=VARCHAR},
+      </if>
+      <if test="how != null" >
+        how = #{how,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="doneTime != null" >
+        done_time = #{doneTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="duration != null" >
+        duration = #{duration,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="domain.Affair" >
+    update affair
+    set what = #{what,jdbcType=VARCHAR},
+      why = #{why,jdbcType=VARCHAR},
+      how = #{how,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      comment = #{comment,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      done_time = #{doneTime,jdbcType=TIMESTAMP},
+      duration = #{duration,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

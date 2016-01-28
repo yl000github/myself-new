@@ -1,0 +1,43 @@
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<properties resource="dbcpconfig.properties" />
+    <!-- 数据库驱动包位置 -->
+    <classPathEntry location="C:/Users/Yang/.m2/repository/mysql/mysql-connector-java/5.0.8/mysql-connector-java-5.0.8.jar"/>
+ 
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+ 
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+ 
+        <!-- 数据库链接URL、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="${mysql.jdbc.url}"
+                        userId="${mysql.jdbc.username}" password="${mysql.jdbc.password}">
+        </jdbcConnection>
+  
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+ 
+        <!-- 生成模型的包名和位置 -->
+        <javaModelGenerator targetPackage="domain" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+ 
+        </javaModelGenerator>
+        <!-- 生成的映射文件包名和位置 -->
+        <sqlMapGenerator targetPackage="dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+ 
+        <!-- 生成DAO的包名和位置 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+ 
+        <!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+        <table tableName="beauty" domainObjectName="Beauty" enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
+    </context>
+</generatorConfiguration>

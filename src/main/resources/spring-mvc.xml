@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+			http://www.springframework.org/schema/mvc 
+			http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+			http://www.springframework.org/schema/context 
+			http://www.springframework.org/schema/context/spring-context-4.0.xsd ">
+
+	<!-- 自动扫描 -->
+	
+	<context:component-scan base-package="web.controller" />
+	
+	<!-- 注解驱动 -->
+	<mvc:annotation-driven >
+	</mvc:annotation-driven>
+	<!-- 资源管理 -->
+	<mvc:resources location="/resources/" mapping="/resources/**" />
+	<mvc:resources location="/upload/" mapping="/upload/**"/>
+
+	<!-- 上传文件解析器 (此处id名固定)-->
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 		<property name="maxUploadSize" value="10485670"/> 10M -->
+<!-- 	</bean> -->
+	
+	<!-- 内部资源视图解析器 prefix + logicName + suffix /WEB-INF/jsps/ + index + .jsp -->
+	<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 包含JSTL解析 -->
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+		<!-- 前缀 -->
+		<property name="prefix" value="/WEB-INF/pages" />
+		<!-- 后缀 -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<!--配置拦截器, 多个拦截器,顺序执行 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="interceptor.CharsetInterceptor" />
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller,请求不存在的服务或资源不会拦截 -->
+			<mvc:mapping path="/**" />
+			
+			<mvc:exclude-mapping path="/affair"/>
+<!-- 			<mvc:exclude-mapping path="/receive"/> -->
+			<!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->
+			<bean class="interceptor.Interceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+</beans>

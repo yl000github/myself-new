@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>事务管理</title>
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  </head> 
+  <body ng-app="myApp" ng-controller="userCtrl">
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+   <div class="navbar-header">
+   		<button type="button" class="navbar-toggle" data-toggle="collapse" 
+         data-target="#example-navbar-collapse">
+         <span class="sr-only">切换导航</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Affair</a>
+   </div>
+   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+      <ul class="nav navbar-nav">
+         <li  data-toggle="modal" data-target="#create-modal"><a href="#">新增</a></li>
+<!--          <li><a class="active" href="#">SVN</a></li> -->
+         <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          	    状态 <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+               <li><a href="#" ng-click="changeStatus(-1)">全部</a></li>
+               <li><a href="#" ng-click="changeStatus(0)">尚未开始</a></li>
+               <li><a href="#" ng-click="changeStatus(1)">进行中</a></li>
+               <li><a href="#" ng-click="changeStatus(2)">完成</a></li>
+               <li><a href="#" ng-click="changeStatus(3)">终止</a></li>
+            </ul>
+         </li>
+      </ul>
+   </div>
+</nav>
+	<div class="container" style="margin-top:65px;">
+	    <!-- 警告框--> 
+	    <div ng-class="dialog.type" ng-show="dialog.show">
+           <a href="#" class="close" ng-click="dialog.hide()">
+              &times;
+           </a>
+           <strong>{{dialog.title}}</strong>{{dialog.content}}
+        </div>
+	    <!--数据列表-->
+		<div class="panel-group" id="accordion" ng-repeat="affair in affairs">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" ng-click="setCurId(affair.id)"
+          href="#collapse{{affair.id}}">
+          {{affair.what}}
+        </a>
+      </h4>
+    </div>
+    <div id="collapse{{affair.id}}" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p> why：{{affair.why}}</p>
+        <p> how：{{affair.how}}</p>
+        <p> status：{{affair.statusValue}}</p>
+        <p> type：{{affair.type}}</p>
+        <p> comment：{{affair.comment}}</p>
+        <p> 创建时间：{{affair.createTime}}</p>
+        <p> 开始时间：{{affair.startTime}}</p>
+        <p> 结束时间：{{affair.doneTime}}</p>
+        <p> 持续时间：{{affair.duration}}</p>
+          <div class="btn-group">
+		  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#start-modal">开始</button>
+		  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#complete-modal">完成</button>
+		  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#terminate-modal">终止</button>
+		  </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+	
+	</div>
+	
+	
+	<!-- 新增模态框（Modal） -->
+<div class="modal fade" id="create-modal" tabindex="-1" role="dialog" 
+   aria-labelledby="createModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="createModalLabel">
+               新增任务
+            </h4>
+         </div>
+         <div class="modal-body">
+          		<form class="form-horizontal" role="form">
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">内容</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="newAffair.what"
+				            placeholder="">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">动机</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="newAffair.why"
+				            placeholder="">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">怎么做</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="newAffair.how"
+				            placeholder="">
+				      </div>
+				   </div>
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">类型</label>
+				      <div class="col-sm-10">
+				          <select class="form-control" ng-model="newAffair.type">
+					         <option ng-repeat="type in rawTypes">{{type}}</option>
+					         <!-- <option>编程</option>
+					         <option>生活</option>
+					         <option>旅游</option> -->
+					      </select>
+				      </div>
+				   </div>
+				</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">关闭
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="createFn()">
+          		    新增
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
+	
+	<!-- 开始模态框（Modal） -->
+<div class="modal fade" id="start-modal" tabindex="-1" role="dialog" 
+   aria-labelledby="startModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="startModalLabel">
+               开始任务
+            </h4>
+         </div>
+         <div class="modal-body">
+          		<form class="form-horizontal" role="form">
+				   
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">怎么做</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="startAffair.how"
+				            placeholder="">
+				      </div>
+				   </div>
+				  
+				</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">关闭
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="startFn()">
+          		    提交
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>	
+
+	<!-- 完成模态框（Modal） -->
+<div class="modal fade" id="complete-modal" tabindex="-1" role="dialog" 
+   aria-labelledby="completeModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="completeModalLabel">
+               完成任务
+            </h4>
+         </div>
+         <div class="modal-body">
+          		<form class="form-horizontal" role="form">
+				   
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">评价</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="completeAffair.comment"
+				            placeholder="">
+				      </div>
+				   </div>
+				  
+				</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">关闭
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="completeFn()">
+          		    提交
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>	
+
+	<!-- 终止模态框（Modal） -->
+<div class="modal fade" id="terminate-modal" tabindex="-1" role="dialog" 
+   aria-labelledby="terminateModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="terminateModalLabel">
+               终止任务
+            </h4>
+         </div>
+         <div class="modal-body">
+          		<form class="form-horizontal" role="form">
+				   
+				   <div class="form-group">
+				      <label for="firstname" class="col-sm-2 control-label">原因</label>
+				      <div class="col-sm-10">
+				         <input type="text" class="form-control" id="firstname" ng-model="terminateAffair.reason"
+				            placeholder="">
+				      </div>
+				   </div>
+				  
+				</form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">关闭
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="terminateFn()">
+          		    提交
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>	
+	
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="../js/jquery-1.11.3.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../angularjs/angularjs-1.4.6.min.js"></script>
+    <script src="../js/nice.js"></script>
+  </body>
+</html>
